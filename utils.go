@@ -1,7 +1,6 @@
-package utils
+package ciutils
 
 import (
-	"ci/pkg/global"
 	"encoding/json"
 	"fmt"
 	"math/rand"
@@ -9,9 +8,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
 	//"github.com/google/uuid"
-	"github.com/dgrijalva/jwt-go"
 )
 
 type MessageType string
@@ -21,6 +18,9 @@ const (
 	WARNING MessageType = "Warning"
 	INFO    MessageType = "Info"
 	SUCCESS MessageType = "Success"
+
+	LOCALHOST string = "127.0.0.1"
+	RUNES     string = "1234567890абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"
 )
 
 func Message(messageType MessageType, message string) map[string]interface{} {
@@ -36,8 +36,7 @@ func GetIPAddress(r *http.Request) (ipAddress string) {
 	for _, ip := range strings.Split(r.RemoteAddr, ":") {
 		ipAddress = ip
 		if ipAddress == "[" {
-			ipAddress = "127.0.0.1"
-			//ipAddress = "localhost"
+			ipAddress = LOCALHOST
 		}
 		break
 	}
@@ -46,7 +45,7 @@ func GetIPAddress(r *http.Request) (ipAddress string) {
 
 func GenConfirmCode(n int) (confirmCode string) {
 	rand.Seed(time.Now().UnixNano())
-	var letters = []rune("1234567890абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ")
+	var letters = []rune(RUNES)
 
 	b := make([]rune, n)
 	for i := range b {
@@ -96,6 +95,22 @@ func PartDateToStr(p int) string {
 		str = strconv.Itoa(p)
 	}
 	return str
+}
+
+// Возвращает строку времени в формате: "2006-01-02 15:04:05"
+func GetTime() string {
+	t := time.Now()
+	return t.Format("2006-01-02 15:04:05")
+}
+
+// Возвращает строку времени в формате: "20060102150405"
+func GetShortTime() string {
+	st := GetTime()
+	st = strings.Replace(st, " ", "", -1)
+	st = strings.Replace(st, "-", "", -1)
+	st = strings.Replace(st, ":", "", -1)
+	fmt.Println(st)
+	return st
 }
 
 // func MonthToStr(m time.Month) string {
@@ -148,44 +163,3 @@ func PartDateToStr(p int) string {
 // 	}
 // 	return str
 // }
-
-// Возвращает строку времени в формате: "2006-01-02 15:04:05"
-func GetTime() string {
-	t := time.Now()
-	return t.Format("2006-01-02 15:04:05")
-}
-
-// Возвращает строку времени в формате: "20060102150405"
-func GetShortTime() string {
-	st := GetTime()
-	st = strings.Replace(st, " ", "", -1)
-	st = strings.Replace(st, "-", "", -1)
-	st = strings.Replace(st, ":", "", -1)
-	fmt.Println(st)
-	return st
-}
-
-func CreateTokens(guid int64) (accessToken string, refreshToken string, err error) {
-	claims := &jwt.StandardClaims{
-		Subject:   "access_token",
-		Id:        Int64ToStr(guid),
-		ExpiresAt: time.Now().Add(time.Minute * time.Duration(global.Config.TTLAccessToken)).Unix(),
-	}
-	at := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
-	accessToken, err = at.SignedString([]byte(global.Config.Passphrase))
-	if err != nil {
-		return
-	}
-
-	claims.Subject = "refresh_token"
-	claims.ExpiresAt = time.Now().Add(time.Hour * time.Duration(global.Config.TTLRefreshToken)).Unix()
-	//rt := jwt.NewWithClaims(jwt.SigningMethodHS384, claims)
-	rt := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
-	refreshToken, err = rt.SignedString([]byte(global.Config.Passphrase))
-	if err != nil {
-		accessToken = ""
-	}
-	fmt.Printf("CreateTokens - access_token: %v\n", accessToken)
-	fmt.Printf("CreateTokens - refresh_token: %v\n", refreshToken)
-	return
-}

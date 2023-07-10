@@ -1,4 +1,4 @@
-package timecounter
+package ciutils
 
 import (
 	"math/rand"
