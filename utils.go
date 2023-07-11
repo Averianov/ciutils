@@ -23,6 +23,9 @@ const (
 
 	LOCALHOST string = "127.0.0.1"
 	RUNES     string = "1234567890абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"
+
+	DB   string = "db"
+	JSON string = "json"
 )
 
 func Message(messageType MessageType, message string) map[string]interface{} {
@@ -126,7 +129,7 @@ func GetRootDir() (rootDir string, err error) {
 	}
 	if _, err = os.Stat(rootDir + GetPathSeparator() + "db"); os.IsNotExist(err) {
 		fmt.Printf("## SetRootDir - Stat err: %s\n", err.Error())
-		if err = os.Mkdir(rootDir+GetPathSeparator()+"db", 0660); os.IsNotExist(err) {
+		if err = os.Mkdir(rootDir+GetPathSeparator()+"db", 0777); os.IsNotExist(err) {
 			fmt.Printf("## SetRootDir - Mkdir err: %s\n", err.Error())
 			return
 		}
