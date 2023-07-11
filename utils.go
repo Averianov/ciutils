@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"math/rand"
 	"net/http"
+	"os"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -95,6 +97,42 @@ func PartDateToStr(p int) string {
 		str = strconv.Itoa(p)
 	}
 	return str
+}
+
+func GetPathSeparator() (separator string) {
+	if runtime.GOOS == "windows" {
+		separator = "\\"
+	} else {
+		separator = "/"
+	}
+	return
+}
+
+func GetDBPath(rawToLog bool) (dir string, err error) {
+	dir, err = GetRootDir()
+	dir = dir + GetPathSeparator()
+	if rawToLog {
+		dir = dir + "json"
+	} else {
+		dir = dir + "db"
+	}
+	return
+}
+
+func GetRootDir() (rootDir string, err error) {
+	rootDir, err = os.Getwd()
+	if err != nil {
+		return
+	}
+	if _, err = os.Stat(rootDir + GetPathSeparator() + "db"); os.IsNotExist(err) {
+		fmt.Printf("## SetRootDir - Stat err: %s\n", err.Error())
+		if err = os.Mkdir(rootDir+GetPathSeparator()+"db", 0660); os.IsNotExist(err) {
+			fmt.Printf("## SetRootDir - Mkdir err: %s\n", err.Error())
+			return
+		}
+	}
+	fmt.Printf("RootDir: %s\n", rootDir)
+	return
 }
 
 // Возвращает строку времени в формате: "2006-01-02 15:04:05"
