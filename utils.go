@@ -40,8 +40,8 @@ func GetIPAddress(r *http.Request) (ipAddress string) {
 		ipAddress = ip
 		if ipAddress == "[" {
 			ipAddress = LOCALHOST
+			break
 		}
-		break
 	}
 	return
 }
