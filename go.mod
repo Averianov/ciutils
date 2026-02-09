@@ -1,4 +1,4 @@
-module https://github.com/Averianov/ciutils
+module github.com/Averianov/ciutils
 
 go 1.23.0
 
