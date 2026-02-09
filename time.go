@@ -70,18 +70,6 @@ func SecondToInt64(i int) int64 {
 	return int64(time.Second/time.Millisecond) * int64(i)
 }
 
-func TimeToInt64(t time.Time) int64 {
-	return t.UnixMilli()
-}
-
-func Int64ToTime(i int64) time.Time {
-	return time.UnixMilli(i).In(TimeLocation)
-}
-
-func SecondToInt64(i int) int64 {
-	return int64(time.Second/time.Millisecond) * int64(i)
-}
-
 func GetNumberOfDay(t time.Time) (dayNumber int64) {
 	initialСount := Int64ToTime(0)
 	dayNumber = int64(t.Sub(initialСount).Hours() / 24)
