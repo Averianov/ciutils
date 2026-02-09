@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	timeLayout = "02.01.2006 15:04:05 MST -07:00"
+	timeLayout            string = "02.01.2006 15:04:05 MST -07:00"
 	DEFAULT_NAME_LOCATION string = "UTC"
 )
 
