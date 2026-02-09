@@ -70,10 +70,12 @@ func StrToInt64(str string) int64 {
 	}
 	return i
 }
-
-func Int64ToStr(i int64) string {
-	str := fmt.Sprintf("%v", i)
-	return str
+func StrToFloat64(str string) float64 {
+	i, err := strconv.ParseFloat(str, 64) // str to float64
+	if err != nil {
+		return 0
+	}
+	return i
 }
 
 // если err!=nil то возвращаем 0
@@ -83,6 +85,11 @@ func StrToInt(str string) int {
 		return 0
 	}
 	return i
+}
+
+func Int64ToStr(i int64) string {
+	str := fmt.Sprintf("%v", i)
+	return str
 }
 
 func IntToStr(i int) string {
@@ -134,71 +141,4 @@ func GetPathSeparator() (separator string) {
 // 	}
 // 	fmt.Printf("RootDir: %s\n", rootDir)
 // 	return
-// }
-
-// Возвращает строку времени в формате: "2006-01-02 15:04:05"
-func GetTime() string {
-	t := time.Now()
-	return t.Format("2006-01-02 15:04:05")
-}
-
-// Возвращает строку времени в формате: "20060102150405"
-func GetShortTime() string {
-	st := GetTime()
-	st = strings.Replace(st, " ", "", -1)
-	st = strings.Replace(st, "-", "", -1)
-	st = strings.Replace(st, ":", "", -1)
-	fmt.Println(st)
-	return st
-}
-
-// func MonthToStr(m time.Month) string {
-// 	return PartDateToStr(int(m))
-// 	// var str string
-// 	// if i < 10 {
-// 	// 	str = "0" + strconv.Itoa(i)
-// 	// } else {
-// 	// 	str = strconv.Itoa(i)
-// 	// }
-// 	// return str
-// }
-
-// func DayToStr(d int) string {
-// 	var str string
-// 	if d < 10 {
-// 		str = "0" + strconv.Itoa(d)
-// 	} else {
-// 		str = strconv.Itoa(d)
-// 	}
-// 	return str
-// }
-
-// func HourToStr(d int) string {
-// 	var str string
-// 	if d < 10 {
-// 		str = "0" + strconv.Itoa(d)
-// 	} else {
-// 		str = strconv.Itoa(d)
-// 	}
-// 	return str
-// }
-
-// func MinutToStr(d int) string {
-// 	var str string
-// 	if d < 10 {
-// 		str = "0" + strconv.Itoa(d)
-// 	} else {
-// 		str = strconv.Itoa(d)
-// 	}
-// 	return str
-// }
-
-// func SecondToStr(d int) string {
-// 	var str string
-// 	if d < 10 {
-// 		str = "0" + strconv.Itoa(d)
-// 	} else {
-// 		str = strconv.Itoa(d)
-// 	}
-// 	return str
 // }
