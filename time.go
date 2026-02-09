@@ -75,7 +75,7 @@ func TimeToInt64(t time.Time) int64 {
 }
 
 func Int64ToTime(i int64) time.Time {
-	return time.UnixMilli(i).In(config.TimeLocation)
+	return time.UnixMilli(i).In(TimeLocation)
 }
 
 func SecondToInt64(i int) int64 {
@@ -99,30 +99,30 @@ func GetMonth(t time.Time) (month int64) {
 }
 
 func GetTomorrowTime(t time.Time) (tomorrow time.Time) {
-	tomorrow = t.AddDate(0, 0, +1).In(config.TimeLocation)
+	tomorrow = t.AddDate(0, 0, +1).In(TimeLocation)
 	return
 }
 
 func GetYesterdayTime(t time.Time) (yesterday time.Time) {
-	yesterday = t.AddDate(0, 0, -1).In(config.TimeLocation)
+	yesterday = t.AddDate(0, 0, -1).In(TimeLocation)
 	return
 }
 
 func GetPreviousMonthTime(t time.Time) (yesterday time.Time) {
-	yesterday = t.AddDate(0, -1, 0).In(config.TimeLocation)
+	yesterday = t.AddDate(0, -1, 0).In(TimeLocation)
 	return
 }
 
 func GetPreviousHoursTime(t time.Time, count time.Duration) (previousTime time.Time) {
 	d := time.Duration(-(time.Hour * count))
-	previousTime = t.Add(d).In(config.TimeLocation)
+	previousTime = t.Add(d).In(TimeLocation)
 	return
 }
 
 // Get period from first day to current day of current month
 func GetCurrentPeriod(now time.Time) (fromDate time.Time, toDate time.Time) {
-	fromDate = time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 000, config.TimeLocation)
-	toDate = time.Date(now.Year(), now.Month(), now.Day(), 23, 59, 59, 999, config.TimeLocation)
+	fromDate = time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 000, TimeLocation)
+	toDate = time.Date(now.Year(), now.Month(), now.Day(), 23, 59, 59, 999, TimeLocation)
 	return
 }
 
@@ -135,14 +135,14 @@ func IsFirstWorkingDay(created, now time.Time, location *time.Location) bool {
 func GetLastPeriod(now time.Time) (fromDate time.Time, toDate time.Time) {
 	previousMonth := GetPreviousMonthTime(now)
 	// first day and time in last month
-	fromDate = time.Date(previousMonth.Year(), previousMonth.Month(), 1, 0, 0, 0, 000, config.TimeLocation)
+	fromDate = time.Date(previousMonth.Year(), previousMonth.Month(), 1, 0, 0, 0, 000, TimeLocation)
 	// first day in current month
-	firstDateInCurrentMonth := time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 000, config.TimeLocation)
+	firstDateInCurrentMonth := time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 000, TimeLocation)
 	// last day in last month
 	lastDateInPreviousMonth := GetYesterdayTime(firstDateInCurrentMonth)
 	// last day and time in last month
 	toDate = time.Date(lastDateInPreviousMonth.Year(), lastDateInPreviousMonth.Month(),
-		lastDateInPreviousMonth.Day(), 23, 59, 59, 999, config.TimeLocation)
+		lastDateInPreviousMonth.Day(), 23, 59, 59, 999, TimeLocation)
 
 	//fromDate = GetTomorrowTime(fromDate)
 	//toDate = GetTomorrowTime(toDate)
