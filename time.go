@@ -13,7 +13,7 @@ const (
 var TimeLocation *time.Location
 
 init() {
-	TimeLocation = time.LoadLocation(DEFAULT_NAME_LOCATION)
+	TimeLocation, _ = time.LoadLocation(DEFAULT_NAME_LOCATION)
 }
 
 func Now() (t time.Time) {
