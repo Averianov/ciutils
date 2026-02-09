@@ -12,7 +12,7 @@ const (
 
 var TimeLocation *time.Location
 
-init() {
+func init() {
 	TimeLocation, _ = time.LoadLocation(DEFAULT_NAME_LOCATION)
 }
 
