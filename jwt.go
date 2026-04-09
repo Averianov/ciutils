@@ -12,7 +12,7 @@ import (
 
 func init() {
 	if sl.L == nil {
-		sl.CreateLogs(jwt, "./log/", 3, 0)
+		sl.CreateLogs("jwt", "./log/", 3, 0)
 	}
 }
 
