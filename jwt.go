@@ -7,22 +7,14 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	sl "github.com/Averianov/cisystemlog"
 )
 
-// type TokenSetting struct {
-// 	AccessTTL  int64
-// 	RefreshTTL int64
-// 	Passphrase string
-// }
-
-// func MakeJWTSettings(aTTL, rTTL int64, secure string) (s *TokenSetting) {
-// 	s = &TokenSetting{
-// 		AccessTTL:  aTTL,
-// 		RefreshTTL: rTTL,
-// 		Passphrase: secure,
-// 	}
-// 	return
-// }
+func init() {
+	if sl.L == nil {
+		sl.CreateLogs(jwt, "./log/", 3, 0)
+	}
+}
 
 func CreateTokens(guid int64, passphrase string, accessTTL, refreshTTL int64) (accessToken string, refreshToken string, err error) {
 	claims := &jwt.StandardClaims{
@@ -44,8 +36,8 @@ func CreateTokens(guid int64, passphrase string, accessTTL, refreshTTL int64) (a
 	if err != nil {
 		accessToken = ""
 	}
-	fmt.Printf("CreateTokens - access_token: %v\n", accessToken)
-	fmt.Printf("CreateTokens - refresh_token: %v\n", refreshToken)
+	sl.L.Debug("CreateTokens - access_token: %v\n", accessToken)
+	sl.L.Debug("CreateTokens - refresh_token: %v\n", refreshToken)
 	return
 }
 
@@ -70,8 +62,8 @@ func CheckToken(r *http.Request, passphrase string) (guid int64, incomingToken s
 	if err != nil {
 		return
 	}
-	//sl.L.Debug("jwToken: %v\n", jwToken)
-	//sl.L.Debug("tk: %v\n", tk)
+	sl.L.Debug("jwToken: %v\n", jwToken)
+	sl.L.Debug("tk: %v\n", tk)
 	if !jwToken.Valid {
 		err = fmt.Errorf("%s", "Check token - token not valid")
 		return
@@ -81,7 +73,9 @@ func CheckToken(r *http.Request, passphrase string) (guid int64, incomingToken s
 		err = fmt.Errorf("%s", "Check token - user number not founded in token")
 		return
 	}
-	// _, err = uuid.Parse(guid)
-	//sl.L.Debug("uuid.Parse error: %v\n", err)
+	_, err = uuid.Parse(guid)
+	if err != nil {
+		sl.L.Debug("uuid.Parse error: %v\n", err)
+	}
 	return
 }
