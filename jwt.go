@@ -2,6 +2,8 @@ package ciutils
 
 import (
 	"fmt"
+	"net/http"
+	"strings"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -44,5 +46,42 @@ func CreateTokens(guid int64, passphrase string, accessTTL, refreshTTL int64) (a
 	}
 	fmt.Printf("CreateTokens - access_token: %v\n", accessToken)
 	fmt.Printf("CreateTokens - refresh_token: %v\n", refreshToken)
+	return
+}
+
+func CheckToken(r *http.Request, passphrase string) (guid int64, incomingToken string, err error) {
+	var jwToken *jwt.Token
+
+	tokenHeader := r.Header.Get("Authorization")
+	if tokenHeader == "" {
+		err = fmt.Errorf("%s", "Check token - token not founded")
+		return
+	}
+	splitted := strings.Split(tokenHeader, " ")
+	if len(splitted) != 2 {
+		err = fmt.Errorf("%s", "Check token - token is not full")
+		return
+	}
+	incomingToken = splitted[1]
+	tk := &jwt.StandardClaims{}
+	jwToken, err = jwt.ParseWithClaims(incomingToken, tk, func(jwToken *jwt.Token) (interface{}, error) {
+		return []byte(passphrase), nil
+	})
+	if err != nil {
+		return
+	}
+	//sl.L.Debug("jwToken: %v\n", jwToken)
+	//sl.L.Debug("tk: %v\n", tk)
+	if !jwToken.Valid {
+		err = fmt.Errorf("%s", "Check token - token not valid")
+		return
+	}
+	guid = StrToInt64(tk.Id)
+	if guid == 0 {
+		err = fmt.Errorf("%s", "Check token - user number not founded in token")
+		return
+	}
+	// _, err = uuid.Parse(guid)
+	//sl.L.Debug("uuid.Parse error: %v\n", err)
 	return
 }
