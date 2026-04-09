@@ -73,9 +73,9 @@ func CheckToken(r *http.Request, passphrase string) (guid int64, incomingToken s
 		err = fmt.Errorf("%s", "Check token - user number not founded in token")
 		return
 	}
-	_, err = uuid.Parse(guid)
-	if err != nil {
-		sl.L.Debug("uuid.Parse error: %v\n", err)
-	}
+	// _, err = uuid.Parse(guid)
+	// if err != nil {
+	// 	sl.L.Debug("uuid.Parse error: %v\n", err)
+	// }
 	return
 }
