@@ -5,7 +5,7 @@ go 1.23.0
 toolchain go1.23.3
 
 require (
-	github.com/Averianov/cisystemlog v0.1.4
+	github.com/Averianov/cisystemlog v0.1.7
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	golang.org/x/crypto v0.37.0
 )
