@@ -1,16 +1,14 @@
 module github.com/Averianov/ciutils
 
-go 1.23.0
-
-toolchain go1.23.3
+go 1.25.0
 
 require (
 	github.com/Averianov/cisystemlog v0.1.7
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	golang.org/x/crypto v0.37.0
+	github.com/golang-jwt/jwt v3.2.2+incompatible
+	golang.org/x/crypto v0.51.0
 )
 
 require (
-	golang.org/x/net v0.21.0 // indirect
-	golang.org/x/text v0.24.0 // indirect
+	golang.org/x/net v0.54.0 // indirect
+	golang.org/x/text v0.37.0 // indirect
 )

@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
 	sl "github.com/Averianov/cisystemlog"
+	"github.com/golang-jwt/jwt"
 )
 
 func init() {
