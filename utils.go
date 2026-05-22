@@ -37,7 +37,9 @@ func Respond(w http.ResponseWriter, data map[string]interface{}) {
 
 func GetIPAddress(r *http.Request) (ipAddress string) {
 	for _, ip := range strings.Split(r.RemoteAddr, ":") {
-		ipAddress = ip
+		if len(strings.Split(ip, ".")) == 4 {
+			ipAddress = ip
+		}
 		if ipAddress == "[" {
 			ipAddress = LOCALHOST
 			break
