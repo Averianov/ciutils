@@ -130,9 +130,10 @@ func GetPathSeparator() (separator string) {
 // 	return
 // }
 
-func MakeSureFileExists(fullFileName string) (err error) {
+func MakeSureFileExists(fullFileName string) (file *os.File, err error) {
 	if _, err = os.Stat(fullFileName); os.IsNotExist(err) {
-		if err = os.Mkdir(fullFileName, 0777); os.IsNotExist(err) {
+		if file, err = os.Create(fullFileName); os.IsNotExist(err) {
+			//if err = os.Mkdir(fullFileName, 0777); os.IsNotExist(err) {
 			return
 		}
 	}
