@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 	"net/http"
+	"os"
 	"runtime"
 	"strconv"
 	"strings"
@@ -129,18 +130,11 @@ func GetPathSeparator() (separator string) {
 // 	return
 // }
 
-// func GetRootDir() (rootDir string, err error) {
-// 	rootDir, err = os.Getwd()
-// 	if err != nil {
-// 		return
-// 	}
-// 	if _, err = os.Stat(rootDir + GetPathSeparator() + "db"); os.IsNotExist(err) {
-// 		fmt.Printf("## SetRootDir - Stat err: %s\n", err.Error())
-// 		if err = os.Mkdir(rootDir+GetPathSeparator()+"db", 0777); os.IsNotExist(err) {
-// 			fmt.Printf("## SetRootDir - Mkdir err: %s\n", err.Error())
-// 			return
-// 		}
-// 	}
-// 	fmt.Printf("RootDir: %s\n", rootDir)
-// 	return
-// }
+func MakeSureFileExists(fullFileName string) (err error) {
+	if _, err = os.Stat(fullFileName); os.IsNotExist(err) {
+		if err = os.Mkdir(fullFileName, 0777); os.IsNotExist(err) {
+			return
+		}
+	}
+	return
+}
