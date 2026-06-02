@@ -7,7 +7,7 @@ import (
 	"time"
 
 	sl "github.com/Averianov/cisystemlog"
-	"github.com/golang-jwt/jwt"
+	jwt "github.com/golang-jwt/jwt/v5"
 )
 
 func init() {
@@ -17,10 +17,10 @@ func init() {
 }
 
 func CreateTokens(guid int64, passphrase string, accessTTL, refreshTTL int64) (accessToken string, refreshToken string, err error) {
-	claims := &jwt.StandardClaims{
-		Subject:   "access_token",
-		Id:        Int64ToStr(guid),
-		ExpiresAt: time.Now().Add(time.Minute * time.Duration(accessTTL)).Unix(),
+	claims := &jwt.RegisteredClaims{
+		Subject:  "access_token",
+		ID:       Int64ToStr(guid),
+		IssuedAt: jwt.NewNumericDate(time.Now().Add(time.Minute * time.Duration(accessTTL))),
 	}
 	at := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
 	accessToken, err = at.SignedString([]byte(passphrase))
@@ -29,7 +29,7 @@ func CreateTokens(guid int64, passphrase string, accessTTL, refreshTTL int64) (a
 	}
 
 	claims.Subject = "refresh_token"
-	claims.ExpiresAt = time.Now().Add(time.Hour * time.Duration(refreshTTL)).Unix()
+	claims.IssuedAt = jwt.NewNumericDate(time.Now().Add(time.Hour * time.Duration(refreshTTL)))
 	//rt := jwt.NewWithClaims(jwt.SigningMethodHS384, claims)
 	rt := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
 	refreshToken, err = rt.SignedString([]byte(passphrase))
@@ -55,7 +55,7 @@ func CheckToken(r *http.Request, passphrase string) (guid int64, incomingToken s
 		return
 	}
 	incomingToken = splitted[1]
-	tk := &jwt.StandardClaims{}
+	tk := &jwt.RegisteredClaims{}
 	jwToken, err = jwt.ParseWithClaims(incomingToken, tk, func(jwToken *jwt.Token) (interface{}, error) {
 		return []byte(passphrase), nil
 	})
@@ -68,7 +68,7 @@ func CheckToken(r *http.Request, passphrase string) (guid int64, incomingToken s
 		err = fmt.Errorf("%s", "Check token - token not valid")
 		return
 	}
-	guid = StrToInt64(tk.Id)
+	guid = StrToInt64(tk.ID)
 	if guid == 0 {
 		err = fmt.Errorf("%s", "Check token - user number not founded in token")
 		return
