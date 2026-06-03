@@ -119,17 +119,6 @@ func GetPathSeparator() (separator string) {
 	return
 }
 
-// func GetDBPath(rawToLog bool) (dir string, err error) {
-// 	dir, err = GetRootDir()
-// 	dir = dir + GetPathSeparator()
-// 	if rawToLog {
-// 		dir = dir + "json"
-// 	} else {
-// 		dir = dir + "db"
-// 	}
-// 	return
-// }
-
 func MakeSureFileExists(fullFileName string) (file *os.File, err error) {
 	if _, err = os.Stat(fullFileName); os.IsNotExist(err) {
 		if file, err = os.Create(fullFileName); os.IsNotExist(err) {
@@ -138,4 +127,18 @@ func MakeSureFileExists(fullFileName string) (file *os.File, err error) {
 		}
 	}
 	return
+}
+
+func BoolToStr(incoming bool) string {
+	if incoming {
+		return "true"
+	}
+	return "false"
+}
+
+func StrToBool(incoming string) bool {
+	if incoming == "true" || incoming == "1" {
+		return true
+	}
+	return false
 }
