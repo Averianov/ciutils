@@ -16,7 +16,7 @@ const (
 )
 
 func init() {
-	sl.SetFileLevel(DEBUG)
+	sl.L.SetFileLevel(sl.DEBUG)
 }
 
 type LetsEncryptManager struct {

@@ -1,7 +1,5 @@
 package ciutils
 
-package cache
-
 import (
 	"context"
 	"errors"

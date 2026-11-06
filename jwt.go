@@ -10,12 +10,6 @@ import (
 	jwt "github.com/golang-jwt/jwt/v5"
 )
 
-func init() {
-	if sl.L == nil {
-		sl.CreateLogs("jwt", "./log/", 3, 0)
-	}
-}
-
 func CreateTokens(guid int64, passphrase string, accessTTL, refreshTTL int64) (accessToken string, refreshToken string, err error) {
 	claims := &jwt.RegisteredClaims{
 		Subject:  "access_token",
