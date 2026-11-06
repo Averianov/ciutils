@@ -11,9 +11,13 @@ import (
 )
 
 const (
-	DIR_CACHE                    string = "./certs"
+	//DIR_CACHE                    string = "./certs"
 	DEBUG_LETS_ENCRYPT_DIRECTORY string = "https://acme-staging-v02.api.letsencrypt.org/directory"
 )
+
+func init() {
+	sl.SetFileLevel(DEBUG)
+}
 
 type LetsEncryptManager struct {
 	*autocert.Manager
@@ -25,7 +29,8 @@ type LetsEncryptManager struct {
 func NewLetsEncryptManager(owner, domain, port string, debug bool) (cm *LetsEncryptManager) {
 	return &LetsEncryptManager{
 		&autocert.Manager{
-			Cache:      autocert.DirCache(DIR_CACHE),
+			//Cache:      autocert.DirCache(DIR_CACHE),
+			Cache:      NewMemoryCache(),
 			Prompt:     autocert.AcceptTOS,
 			Email:      owner,
 			HostPolicy: autocert.HostWhitelist(domain),
@@ -49,13 +54,13 @@ func (cm *LetsEncryptManager) GetLetsEncryptConfig() (cfg *tls.Config) {
 func (cm *LetsEncryptManager) GetLetsEncryptServer(handler http.Handler) (letsEncryptServer *http.Server) {
 
 	if cm.DebugMode {
-		sl.L.Debug("enables debug mode - using testing URL for LetsEncrypt get cert\n%s\n", DEBUG_LETS_ENCRYPT_DIRECTORY)
+		sl.L.Info("enables debug mode - using testing URL for LetsEncrypt get cert: %s", DEBUG_LETS_ENCRYPT_DIRECTORY)
 		cm.Client = &acme.Client{
 			DirectoryURL: DEBUG_LETS_ENCRYPT_DIRECTORY,
 		}
 	}
 
-	sl.L.Debug("http made on %s\n", cm.Domain+":"+cm.Port)
+	sl.L.Debug("http made on %s", cm.Domain+":"+cm.Port)
 	letsEncryptServer = &http.Server{
 		Addr: ":" + cm.Port,
 		//Addr:         cm.Domain + ":" + cm.Port,
